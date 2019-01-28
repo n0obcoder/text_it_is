@@ -1,0 +1,27 @@
+sudo apt-get install git
+
+#CLONE
+sudo git clone https://github.com/n0obcoder/text_it_is.git
+
+#GIVE ALL PERMISSIONS
+sudo chmod -R 777 text_it_is
+
+#CURRENT BRANCH
+sudo git branch
+
+#SHOW ALL BRANCHES
+sudo git branch -a
+
+#GO TO other_branch
+sudo git checkout other_branch
+#throws an error: it asks you to first commint the changes before moving to any other branch
+
+So, use this
+#CHECK STATUS
+git status
+
+sudo git add .
+
+#TRY AGAIN
+sudo git checkout other_branch 
+#this time it will work
