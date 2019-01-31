@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-
+import torch.nn.functional as F
 corpus = [
     'he is a king',
     'she is a queen',
@@ -70,12 +70,78 @@ print(idx_pairs)
     
     
     
+##################SWITCHING ON THE TORCH####################    
+
+def get_input_layer(word_idx):
+    x=torch.zeros(vocabulary_size).float()
+    x[word_idx] = 1.
+    return x
+
+embedding_dims = 5
+W1 = torch.randn(embedding_dims, vocabulary_size, requires_grad=True).float()
+W2 = torch.randn(vocabulary_size, embedding_dims, requires_grad=True).float()
+num_epochs = 200
+lr = 0.001
+
+for epo in range(num_epochs):
+    loss_val = 0
+    for data, target in idx_pairs:
+        #print(data,type(target), type(data), target)
+        x = get_input_layer(data)
+        y_true = torch.from_numpy(np.array([target])).long()
+        
+        #print(x)
+        #print(y_true)
+        
+        z1 = torch.matmul(W1, x)
+        #print(x.shape)
+        #print(W1.shape)
+        #print(z1.shape)
+        z2 = torch.matmul(W2, z1)
+        #print(z2.shape)
+        
+        log_softmax = F.log_softmax(z2, dim = 0)
+        #print(log_softmax.shape)
+        loss = F.nll_loss(log_softmax.view(1, -1), y_true)
+        #print(loss)
+        loss_val += loss.data
+        #print(loss_val)
+        
+        
+        loss.backward()
+        W1.data -= lr*W1.grad.data
+        W2.data -= lr*W2.grad.data        
+        
+        W1.grad.data.zero_()
+        W2.grad.data.zero_()
+        
+        
+        #if epo % 10 == 0:    
+            #print(loss_val)
+            #print('Loss at epo {epo}: {loss_val/len(idx_pairs)}')
+        #exit()
+    print(loss_val)
+    print('............')
+    
+    #exit()    
     
     
     
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     
     
     
